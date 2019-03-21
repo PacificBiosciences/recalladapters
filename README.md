@@ -12,8 +12,6 @@ for information on Installation, Support, License, Copyright, and Disclaimer.
 
 ## Usage
 
-Both tools have an identical interface and take BAM and/or DataSet files as input.
-Examples:
 Provide the `subreads.bam` and `scraps.bam` as input, together with an output
 `projectName` and the FASTA file containing the new adapter(s).
 
