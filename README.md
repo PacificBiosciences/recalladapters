@@ -21,9 +21,9 @@ This tool allows users to modify the adapter sequences used in adapter finding, 
 ## Usage
 ### Helptext
 ```$ recalladapters -h
-Usage: -o outputPrefix [options] input.(subreads|hqregion).bam input.scraps.bam
+Usage: -s subreadset.xml -o outputPrefix [options]
 
-Version:7.1.0.SNAPSHOT63796
+Version:9.0.0.da2e8977c
 
 recalladapters operates on BAM files in one convention (subreads+scraps or
 hqregions+scraps), allows reprocessing adapter calls then outputs the resulting
@@ -35,7 +35,7 @@ Conversely, "scraps" BAM files will be output.
 ZMW reads are not allowed as input, due to the missing HQ-region annotations!
 
 Input read convention is determined from the READTYPE annotation in the @RG::DS
-tags of the input BAM files.A subreadset can be used as input, instead of the
+tags of the input BAM files.A subreadset *must* be used as input instead of the
 individual BAM files.
 
 Options:
@@ -44,6 +44,8 @@ Options:
 
   Mandatory parameters:
     -o STRING           Prefix of output filenames
+    -s STRING, --subreadset=STRING
+                        Input subreadset.xml
 
   Optional parameters:
     -j INT, --nProcs=INT
@@ -54,6 +56,7 @@ Options:
     --silent            No progress output.
 
   Adapter finding parameters:
+    --disableAdapterFinding
     --adapters=adapterSequences.fasta
     --globalAlnFlanking
     --flankLength=INT
@@ -67,26 +70,31 @@ Options:
     --minAdapterScore=int
                         Minimal score for an adapter
     --minSubLength=INT  Minimal subread length. Default: 50
+    --minSnr=FLOAT      Minimal SNR across channels. Default: 3.75
 
   White list:
     --whitelistZmwNum=RANGES
                         Only process given ZMW NUMBERs
 
-Example: recalladapters in.subreads.bam in.scraps.bam -o out --adapters adapters.fasta
+Example: recalladapters -s in.subreadset.xml -o out --adapters adapters.fasta
 ```
 
 ### Examples
-Provide the `subreads.bam` and `scraps.bam` as input, together with an output
+Provide the `subreadset.xml` as input, together with an output
 `projectName` and the FASTA file containing the new adapter(s):
 
-    recalladapters -o projectName --adapters newAdapters.fasta input.subreads.bam input.scraps.bam
-    
+    recalladapters -o projectName --adapters newAdapters.fasta -s input.subreadset.xml
+
 Adapter finding can put more emphasis on flank size if the adapter sequence is very similar to a sequence found in the rest of the sample:
 
-    $ recalladapters --flankLength=500 --minFlankingScore=200 --adapter adapters.fasta -o movieName.newAdapters movieName.subreads.bam movieName.scraps.bam
+    $ recalladapters --flankLength=500 --minFlankingScore=200 --adapter adapters.fasta -o movieName.newAdapters -s input.subreadset.xml
 
 ## Full Changelog
- * **7.1.0.425709f**: Initial release
+ * **9.0.0.da2e8977c**:
+   * New CLI UX
+   * Add `--minSnr`
+ * 7.1.0.425709f:
+   * Initial release
 
 ## DISCLAIMER
 THIS WEBSITE AND CONTENT AND ALL SITE-RELATED SERVICES, INCLUDING ANY DATA, ARE PROVIDED "AS IS," WITH ALL FAULTS, WITH NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTIES OF MERCHANTABILITY, SATISFACTORY QUALITY, NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE. YOU ASSUME TOTAL RESPONSIBILITY AND RISK FOR YOUR USE OF THIS SITE, ALL SITE-RELATED SERVICES, AND ANY THIRD PARTY WEBSITES OR APPLICATIONS. NO ORAL OR WRITTEN INFORMATION OR ADVICE SHALL CREATE A WARRANTY OF ANY KIND. ANY REFERENCES TO SPECIFIC PRODUCTS OR SERVICES ON THE WEBSITES DO NOT CONSTITUTE OR IMPLY A RECOMMENDATION OR ENDORSEMENT BY PACIFIC BIOSCIENCES.
